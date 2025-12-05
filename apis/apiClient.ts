@@ -2,7 +2,7 @@ import { getDefaultStore } from 'jotai';
 import { accessTokenAtom } from '@/atoms/auth';
 import { BASE_URL } from './constants';
 import { refreshAccessToken } from './auth';
-import { ApiError, AuthError, ErrorResponse } from './error';
+import { ApiError, AuthError, ErrorResponse, NetworkError } from './error';
 
 type RequestConfig = RequestInit & {
     headers?: Record<string, string>;
@@ -26,10 +26,9 @@ async function fetchClient(endpoint: string, config: RequestConfig = {}) {
 
     const headers: Record<string, string> = { ...config.headers };
 
-    if (!(config.body instanceof FormData)) {
+    if (config.body !== undefined && !(config.body instanceof FormData)) {
         headers["Content-Type"] = "application/json";
     }
-
     if (token) {
         headers["Authorization"] = `Bearer ${token}`;
     }
@@ -37,7 +36,12 @@ async function fetchClient(endpoint: string, config: RequestConfig = {}) {
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
     const url = `${BASE_URL}${cleanEndpoint}`;
 
-    let response = await fetch(url, { ...config, headers });
+    let response: Response;
+    try {
+        response = await fetch(url, { ...config, headers });
+    } catch (error) {
+        throw new NetworkError(error instanceof Error ? error.message : "Unknown network error");
+    }
 
     if (response.status === 401) {
         if (!isRefreshing) {
@@ -46,7 +50,6 @@ async function fetchClient(endpoint: string, config: RequestConfig = {}) {
                 const newToken = await refreshAccessToken();
                 store.set(accessTokenAtom, newToken);
                 onRefreshed(newToken);
-
 
                 headers["Authorization"] = `Bearer ${newToken}`;
                 const retryResponse = await fetch(url, { ...config, headers });
