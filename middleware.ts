@@ -68,6 +68,9 @@ export async function middleware(request: NextRequest) {
 
             // 5. 서버 컴포넌트(Page.tsx)가 즉시 인식하도록 Request 헤더 업데이트
             // 새로 받은 값이 있으면 그걸 쓰고, 없으면(갱신 안된 경우) 기존 거 유지
+            if (!newAccessTokenValue) {
+                throw new Error('Refresh response did not include new access token');
+            }
             requestHeaders.set('Cookie', `ACCESS_TOKEN=${newAccessTokenValue || accessToken}; REFRESH_TOKEN=${newRefreshTokenValue || refreshToken}`);
 
             return response;
