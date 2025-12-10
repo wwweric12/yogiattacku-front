@@ -24,6 +24,7 @@ export async function middleware(request: NextRequest) {
         try {
             const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+
             // 백엔드 요청
             const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
                 method: 'POST',
@@ -96,6 +97,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|.*\\.jpg).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|.*\\.jpg|mockServiceWorker.js).*)',
     ],
 };
