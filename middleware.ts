@@ -6,18 +6,26 @@ export async function middleware(request: NextRequest) {
     const refreshToken = request.cookies.get('REFRESH_TOKEN')?.value;
 
 
-    const publicPaths = ['/',];
+    const publicPaths = ['/login'];
     const isPublicPath = publicPaths.includes(request.nextUrl.pathname) || request.nextUrl.pathname.startsWith('/auth/');
 
     // 1. 토큰 없고 공개 경로 아님 -> 로그인 페이지로
     if (!accessToken && !refreshToken && !isPublicPath) {
+        return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    // 2. 토큰 있고 로그인 페이지 접근 -> 메인 페이지로
+    // 단, session 파라미터가 있는 경우(예: 만료되어 리다이렉트된 경우)는 제외하고 로그인 페이지 보여줌
+    if ((accessToken || refreshToken) && request.nextUrl.pathname === '/login' && !request.nextUrl.searchParams.get('session')) {
         return NextResponse.redirect(new URL('/', request.url));
     }
 
     // 2. 엑세스 토큰 만료 & 리프레시 토큰 존재 -> 갱신 시도
-    if (!accessToken && refreshToken) {
+    // 단, 이미 갱신 실패로 리다이렉트된 경우(session=expired)는 제외
+    if (!accessToken && refreshToken && !request.nextUrl.searchParams.get('session')) {
         try {
             const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 
             // 백엔드 요청
             const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
@@ -56,7 +64,9 @@ export async function middleware(request: NextRequest) {
                 // (B) 서버 컴포넌트용: 값만 추출 (단순 파싱)
                 // 예: "accessToken=abcde12345; Path=/; HttpOnly"
                 const [nameValue] = cookieString.split(';'); // "accessToken=abcde12345"
-                const [name, value] = nameValue.split('=');   // name="accessToken", value="abcde12345"
+                const eqIndex = nameValue.indexOf('=');
+                const name = nameValue.slice(0, eqIndex);
+                const value = nameValue.slice(eqIndex + 1);
 
                 if (name.trim() === 'ACCESS_TOKEN') {
                     newAccessTokenValue = value;
@@ -79,7 +89,7 @@ export async function middleware(request: NextRequest) {
             console.error("Middleware refresh error:", error);
 
             // 실패 시 로그아웃 처리
-            const response = NextResponse.redirect(new URL('/', request.url));
+            const response = NextResponse.redirect(new URL('/login?session=expired', request.url));
             response.cookies.delete('ACCESS_TOKEN');
             response.cookies.delete('REFRESH_TOKEN');
             return response;
@@ -91,6 +101,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|.*\\.jpg).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|.*\\.jpg|mockServiceWorker.js).*)',
     ],
 };
