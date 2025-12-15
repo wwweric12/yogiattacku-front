@@ -2,9 +2,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-    // 디버깅용 로그: 어떤 경로가 미들웨어를 타고 있는지 확인
-    console.log("Middleware called for:", request.nextUrl.pathname);
-
     const accessToken = request.cookies.get('ACCESS_TOKEN')?.value
     const refreshToken = request.cookies.get('REFRESH_TOKEN')?.value;
 
@@ -39,7 +36,6 @@ export async function middleware(request: NextRequest) {
             });
 
             if (!refreshResponse.ok) {
-                console.log(`Middleware: Refresh failed. Status: ${refreshResponse.status}, Text: ${refreshResponse.statusText}`);
                 throw new Error('Refresh failed');
             }
 
@@ -68,7 +64,9 @@ export async function middleware(request: NextRequest) {
                 // (B) 서버 컴포넌트용: 값만 추출 (단순 파싱)
                 // 예: "accessToken=abcde12345; Path=/; HttpOnly"
                 const [nameValue] = cookieString.split(';'); // "accessToken=abcde12345"
-                const [name, value] = nameValue.split('=');   // name="accessToken", value="abcde12345"
+                const eqIndex = nameValue.indexOf('=');
+                const name = nameValue.slice(0, eqIndex);
+                const value = nameValue.slice(eqIndex + 1);
 
                 if (name.trim() === 'ACCESS_TOKEN') {
                     newAccessTokenValue = value;
