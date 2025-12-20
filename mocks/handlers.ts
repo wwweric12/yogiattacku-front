@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { Post } from '@/types/board';
-import { BASE_URL } from '@/apis/constants';
+import { BASE_URL } from '@/apis/utils/constants';
 
 const mockPosts: Post[] = Array.from({ length: 9 }).map((_, i) => ({
     id: i + 1,

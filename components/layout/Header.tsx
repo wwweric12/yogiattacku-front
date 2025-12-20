@@ -14,7 +14,7 @@ import {
 
 import { usePathname, useRouter } from "next/navigation";
 
-import { logout } from "@/apis/auth";
+import { logout } from "@/apis/auth/auth";
 
 export function Header() {
     const pathname = usePathname();

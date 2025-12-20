@@ -1,5 +1,5 @@
 import { BASE_URL } from './constants';
-import { refreshAccessToken } from './token';
+import { refreshAccessToken } from '../auth/token';
 import { ApiError, AuthError, ErrorResponse, NetworkError } from './error';
 
 type RequestConfig = RequestInit & {

@@ -1,6 +1,6 @@
 import { Post } from "@/types/board";
 import { PostCard } from "@/components/board/PostCard";
-import { fetchServer } from "@/apis/server-api";
+import { fetchServer } from "@/apis/utils/server-api";
 import Link from "next/link";
 
 async function getPopularPosts(): Promise<Post[]> {

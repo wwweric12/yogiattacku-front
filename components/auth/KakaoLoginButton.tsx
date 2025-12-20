@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { BASE_URL } from "@/apis/constants";
+import { BASE_URL } from "@/apis/utils/constants";
 
 export function KakaoLoginButton() {
   const handleLogin = () => {

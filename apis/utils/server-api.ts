@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { BASE_URL } from "./constants";
+import { BASE_URL } from './constants';
 
 export async function fetchServer(endpoint: string, options: RequestInit = {}) {
     const cookieStore = await cookies();
