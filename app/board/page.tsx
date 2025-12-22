@@ -1,13 +1,39 @@
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
+import { getPosts, getPostsByCategory } from "@/apis/board";
+import { BoardContainer } from "@/components/board/BoardContainer";
+import { boardKeys } from "@/apis/utils/queryKeys";
+import { queryOptions } from "@/apis/utils/queryOptions";
 
+export default async function BoardPage({
+    searchParams
+}: {
+    searchParams: Promise<{ page?: string; categories?: string }>
+}) {
+    const queryClient = new QueryClient();
+    const params = await searchParams;
 
+    const page = parseInt(params.page || "0");
+    const size = 9;
+    const categories = params.categories ? params.categories.split(",").filter(Boolean) : [];
 
-export default function BoardPage() {
-
+    await queryClient.prefetchQuery({
+        queryKey: boardKeys.posts(page, size, categories),
+        queryFn: () => {
+            if (categories.length > 0) {
+                return getPostsByCategory(categories, page, size);
+            }
+            return getPosts(page, size);
+        },
+        staleTime: queryOptions.board.staleTime,
+    });
 
     return (
-        <div className="container mx-auto py-8">
-            <h1 className="text-2xl font-bold mb-4">게시판</h1>
-            <p>로그인이 완료되었습니다. 게시글 목록이 여기에 표시됩니다.</p>
-        </div>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <BoardContainer
+                initialPage={page}
+                initialSize={size}
+                initialCategories={categories}
+            />
+        </HydrationBoundary>
     );
 }
