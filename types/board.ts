@@ -1,10 +1,12 @@
 export interface Post {
     id: number;
+    userId: number;
     title: string;
-    content: string;
-    author: string;
+    preview: string;
+    thumbnailUrl: string;
+    viewCount: number;
     createdAt: string;
-    views: number;
-    category: string;
-    thumbnail?: string;
+    categoryIds: string[];
+    author?: string;
+    categories?: string[];
 }
