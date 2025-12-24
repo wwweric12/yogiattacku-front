@@ -14,13 +14,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { usePathname, useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 import { logout } from "@/apis/auth/auth";
+import { getUser } from "@/apis/user";
+import { userKeys } from "@/apis/utils/queryKeys";
 
 export function Header() {
     const pathname = usePathname();
     const router = useRouter();
     const isLoginPage = pathname === "/login";
+
+    const { data: user } = useQuery({
+        queryKey: userKeys.profile(),
+        queryFn: getUser,
+        staleTime: Infinity, // Cache user profile for the session
+        enabled: !isLoginPage, // Don't fetch on login page
+    });
 
     const handleLogout = async () => {
         try {
@@ -52,45 +62,53 @@ export function Header() {
 
                 <nav className="flex items-center gap-4">
                     <Link href="/chat">
-                        <Button variant="ghost" size="sm">
+                        <Button variant={pathname.startsWith("/chat") ? "secondary" : "ghost"} size="sm">
                             챗봇
                         </Button>
                     </Link>
                     <Link href="/board?page=1&pageSize=9">
-                        <Button variant="ghost" size="sm">
+                        <Button
+                            variant={pathname.startsWith("/board") && !pathname.startsWith("/board/mypage") ? "secondary" : "ghost"}
+                            size="sm"
+                        >
                             게시판
                         </Button>
                     </Link>
-                    <Link href="/mypage">
-                        <Button variant="ghost" size="sm">
+                    <Link href="/board/mypage?page=1&pageSize=9">
+                        <Button
+                            variant={pathname.startsWith("/board/mypage") ? "secondary" : "ghost"}
+                            size="sm"
+                        >
                             마이페이지
                         </Button>
                     </Link>
 
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src="/avatars/01.png" alt="@user" />
-                                    <AvatarFallback>U</AvatarFallback>
-                                </Avatar>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56" align="end" forceMount>
-                            <DropdownMenuLabel className="font-normal">
-                                <div className="flex flex-col space-y-1">
-                                    <p className="text-sm font-medium leading-none">사용자</p>
-                                    <p className="text-xs leading-none text-muted-foreground">
-                                        user@example.com
-                                    </p>
-                                </div>
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={handleLogout}>
-                                로그아웃
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    {user && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                                    <Avatar className="h-8 w-8">
+                                        <AvatarImage src={user.profileImageUrl || "/avatars/01.png"} alt={user.nickname} />
+                                        <AvatarFallback>{user.nickname?.[0] || "U"}</AvatarFallback>
+                                    </Avatar>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56" align="end" forceMount>
+                                <DropdownMenuLabel className="font-normal">
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium leading-none">{user.nickname}</p>
+                                        <p className="text-xs leading-none text-muted-foreground">
+                                            {user.email}
+                                        </p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={handleLogout}>
+                                    로그아웃
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                 </nav>
             </div>
         </header>
