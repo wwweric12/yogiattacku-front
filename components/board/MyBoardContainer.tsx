@@ -8,11 +8,12 @@ import { PostCard } from "@/components/board/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
 import { AlertCircle } from "lucide-react";
+import { BOARD_PAGE_SIZE } from "@/constants/board";
 
 export function MyBoardContainer() {
     const searchParams = useSearchParams();
     const page = Number(searchParams.get("page")) || 1;
-    const pageSize = 9;
+    const pageSize = BOARD_PAGE_SIZE;
 
     const { data, isLoading, error } = useQuery({
         queryKey: boardKeys.mypage(page, pageSize),
@@ -22,7 +23,7 @@ export function MyBoardContainer() {
     if (isLoading) {
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, i) => (
+                {[...Array(BOARD_PAGE_SIZE)].map((_, i) => (
                     <Skeleton key={i} className="h-[320px] rounded-xl" />
                 ))}
             </div>

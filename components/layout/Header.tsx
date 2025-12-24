@@ -19,6 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 import { logout } from "@/apis/auth/auth";
 import { getUser } from "@/apis/user";
 import { userKeys } from "@/apis/utils/queryKeys";
+import { BOARD_PAGE_SIZE } from "@/constants/board";
 
 export function Header() {
     const pathname = usePathname();
@@ -66,7 +67,7 @@ export function Header() {
                             챗봇
                         </Button>
                     </Link>
-                    <Link href="/board?page=1&pageSize=9">
+                    <Link href={`/board?page=1&pageSize=${BOARD_PAGE_SIZE}`}>
                         <Button
                             variant={pathname.startsWith("/board") && !pathname.startsWith("/board/mypage") ? "secondary" : "ghost"}
                             size="sm"
@@ -74,7 +75,7 @@ export function Header() {
                             게시판
                         </Button>
                     </Link>
-                    <Link href="/board/mypage?page=1&pageSize=9">
+                    <Link href={`/board/mypage?page=1&pageSize=${BOARD_PAGE_SIZE}`}>
                         <Button
                             variant={pathname.startsWith("/board/mypage") ? "secondary" : "ghost"}
                             size="sm"

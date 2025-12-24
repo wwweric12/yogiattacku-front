@@ -8,3 +8,5 @@ export const BOARD_CATEGORIES = [
     { id: 7, name: "쇼핑" },
     { id: 8, name: "음식점" }
 ] as const;
+
+export const BOARD_PAGE_SIZE = 9;
