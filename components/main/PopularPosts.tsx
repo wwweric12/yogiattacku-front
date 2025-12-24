@@ -1,7 +1,6 @@
 "use client";
 
 import { PostCard } from "@/components/board/PostCard";
-import Link from "next/link";
 import { getPopularPosts } from "@/apis/board";
 import { useQuery } from "@tanstack/react-query";
 import { boardKeys } from "@/apis/utils/queryKeys";
@@ -31,9 +30,7 @@ export function PopularPosts() {
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {posts.map((post) => (
-                        <Link key={post.id} href={`/board/${post.id}`}>
-                            <PostCard post={post} />
-                        </Link>
+                        <PostCard key={post.boardId} post={post} />
                     ))}
                 </div>
             </div>
