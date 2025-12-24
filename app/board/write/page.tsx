@@ -35,7 +35,6 @@ export default function WritePage() {
                 setBucketRootKey(data.bucketRootKey);
             } catch (error) {
                 console.error("Failed to fetch bucket root key:", error);
-                // Handle error (e.g., redirect or show toast)
             }
         };
         fetchBucketKey();
