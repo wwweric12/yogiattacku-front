@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Post } from "@/types/board";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { deletePost, getPost } from "@/apis/board";
 import { useQueryClient } from "@tanstack/react-query";
 import { boardKeys } from "@/apis/utils/queryKeys";
@@ -51,16 +52,18 @@ export function PostCard({ post }: PostCardProps) {
                         fill
                         className="object-cover"
                     />
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button
-                            variant="destructive"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={handleDelete}
-                        >
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </div>
+                    {post.isAuthor && (
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                                variant="destructive"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={handleDelete}
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 <CardHeader className="p-4 pb-2">
                     <div className="flex justify-between items-start mb-2">
@@ -77,10 +80,14 @@ export function PostCard({ post }: PostCardProps) {
                     </div>
                     <h3 className="font-bold text-lg line-clamp-1">{post.title}</h3>
                 </CardHeader>
-                <CardContent className="p-4 pt-0 flex-grow">
+                <CardContent className="p-4 pt-0 grow">
                 </CardContent>
                 <CardFooter className="p-4 pt-0 text-xs text-muted-foreground flex justify-between items-center mt-auto">
                     <div className="flex items-center gap-1">
+                        <Avatar className="h-5 w-5">
+                            <AvatarImage src={post.profileImageUrl || "/avatars/01.png"} alt={post.nickname} />
+                            <AvatarFallback>{post.nickname[0]}</AvatarFallback>
+                        </Avatar>
                         <span className="font-medium text-foreground">{post.nickname}</span>
                     </div>
                     <div className="flex items-center gap-3">

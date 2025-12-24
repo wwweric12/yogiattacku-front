@@ -7,10 +7,12 @@ export interface Post {
     boardId: number;
     userId: number;
     nickname: string;
+    profileImageUrl: string | null;
     title: string;
     viewCount: number;
     bucketRootKey: string;
     thumbnailS3Key: string;
+    isAuthor?: boolean;
     createdAt: string;
     categories: Category[];
 }

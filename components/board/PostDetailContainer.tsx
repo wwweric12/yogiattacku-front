@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPost, deletePost } from "@/apis/board";
 import { boardKeys } from "@/apis/utils/queryKeys";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -87,14 +88,20 @@ export function PostDetailContainer({ boardId }: PostDetailContainerProps) {
 
                     <div className="flex justify-between items-start">
                         <h1 className="text-4xl font-bold text-gray-900">{post.title}</h1>
-                        <Button variant="destructive" size="sm" onClick={handleDelete}>
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            삭제하기
-                        </Button>
+                        {post.isAuthor && (
+                            <Button variant="destructive" size="sm" onClick={handleDelete}>
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                삭제하기
+                            </Button>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-6 text-sm text-gray-500">
                         <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                                <AvatarImage src={post.profileImageUrl || "/avatars/01.png"} alt={post.nickname} />
+                                <AvatarFallback>{post.nickname[0]}</AvatarFallback>
+                            </Avatar>
                             <span className="font-medium text-gray-900">{post.nickname}</span>
                         </div>
                         <div className="flex items-center gap-1">
