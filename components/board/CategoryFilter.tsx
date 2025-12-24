@@ -10,7 +10,7 @@ export function CategoryFilter() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const currentCategoryIds = searchParams.get("categoryIds")?.split(",").map(Number).filter(Boolean) || [];
+    const currentCategoryIds = searchParams.get("categoryIds")?.split(",").map(Number).filter(id => !isNaN(id)) || [];
 
     const handleCategoryClick = useCallback((categoryId: number) => {
         const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -28,7 +28,7 @@ export function CategoryFilter() {
             newSearchParams.delete("categoryIds");
         }
 
-        newSearchParams.set("page", "1"); // Reset to page 1
+        newSearchParams.set("page", "1");
 
         router.push(`?${newSearchParams.toString()}`);
     }, [currentCategoryIds, router, searchParams]);
