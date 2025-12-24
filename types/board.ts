@@ -68,10 +68,3 @@ export interface PresignedUrlRequest {
     fileExt: string;
     fileSize: number;
 }
-
-export interface Page<T> {
-    items: T[];
-    page: number;
-    size: number;
-    hasNext: boolean;
-}
