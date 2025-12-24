@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
       // [Font]
       "font-src 'self' data:;",
 
-      "connect-src 'self' https://yogiattacku.n-e.kr https://dapi.kakao.com https://*.kakao.com https://*.daum.net https://t1.daumcdn.net https://*.daumcdn.net https://*.amazonaws.com https://*.cloudfront.net;",
+      "connect-src 'self' https://api.yogiattacku.shop https://yogiattacku.n-e.kr https://dapi.kakao.com https://*.kakao.com https://*.daum.net https://t1.daumcdn.net https://*.daumcdn.net https://*.amazonaws.com https://*.cloudfront.net;",
     ].join(" ");
 
     return [
