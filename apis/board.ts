@@ -21,6 +21,12 @@ export const getPostsByCategory = async (categoryIds: string[], page: number, si
     return body.data;
 };
 
+export const getMyPosts = async (page: number, size: number): Promise<BoardResponse> => {
+    const response = await api.get(`/board/mypage?page=${page}&pageSize=${size}`);
+    const body = await response.json();
+    return body.data;
+};
+
 export const getBucketRootKey = async (): Promise<BucketRootKeyResponse> => {
     const response = await api.get("/board/write");
     const body = await response.json() as ApiResponse<BucketRootKeyResponse>;
