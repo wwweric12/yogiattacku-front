@@ -1,6 +1,8 @@
 import { Bot, User, MapPin } from "lucide-react";
 import { Message, Spot } from "@/types/chat";
 import { cn } from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface MessageBubbleProps {
     message: Message;
@@ -40,7 +42,14 @@ export function MessageBubble({ message, isLast, isLoading, onSpotClick }: Messa
                         : "bg-white text-gray-800 border border-gray-200 rounded-tl-none"
                 )}
             >
-                <div className="whitespace-pre-wrap">{message.content}</div>
+                <div className={cn(
+                    "prose prose-sm max-w-none break-words",
+                    isUser ? "prose-invert" : "prose-slate"
+                )}>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {message.content}
+                    </ReactMarkdown>
+                </div>
 
                 {showLoadingDots && (
                     <div className="mt-2 flex items-center gap-1">

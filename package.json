@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev -p 3001\" \"local-ssl-proxy --source 3000 --target 3001 --cert local.yogiattacku.n-e.kr.pem --key local.yogiattacku.n-e.kr-key.pem\"",
+    "dev": "concurrently \"next dev -p 3001\" \"local-ssl-proxy --source 3000 --target 3001 --cert localhost+2.pem --key localhost+2-key.pem\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -22,6 +22,8 @@
     "next": "16.0.10",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
